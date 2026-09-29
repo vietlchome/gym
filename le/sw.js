@@ -1,5 +1,5 @@
 // Lưu trang vào máy để dùng offline. Đổi VERSION mỗi lần cập nhật.
-const VERSION='202609291631';
+const VERSION='202609291643';
 const CACHE='sotap-'+VERSION;
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));});

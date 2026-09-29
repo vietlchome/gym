@@ -732,14 +732,15 @@ function bindSession(){
       if(kg&&kg.value===''&&num(kg.placeholder)!=null) kg.value=kg.placeholder;
       const setNo=plates.indexOf(p)+1, lastSet=setNo===n;
       const s=S[sid], nxt=s.ex[idx+1], prevSS=e.ss&&idx>0&&s.ex[idx-1].ss===e.ss?s.ex[idx-1]:null;
-      const afterRest = e.rest? [{lab:lastSet?'Xong '+e.k+' · '+e.en:'Set '+(setNo+1)+'/'+n+' tiếp theo',sec:e.rest,kind:'rest',
+      const finalSet = lastSet && !nxt;
+      const afterRest = finalSet? [] : e.rest? [{lab:lastSet?'Xong '+e.k+' · '+e.en:'Set '+(setNo+1)+'/'+n+' tiếp theo',sec:e.rest,kind:'rest',
           nx: prevSS&&!lastSet?'Quay lại '+prevSS.k+' · '+prevSS.en:(lastSet?nextInfo(sid,idx):(prevSS?prevSS.k+' · '+prevSS.en:e.en))}]
         : [{lab:'Sang ngay '+nxt.k+' · '+nxt.en,sec:15,kind:'rest',nx:'Không nghỉ. Đổi máy hoặc tạ rồi làm luôn.'}];
       if(e.hold){
         const hs=num(kg.value)||e.rep[0]; setPlate(p,hs); persist();
         runSeq([{lab:'Bên trái — giữ '+hs+' giây',sec:hs,kind:'work'},{lab:'Đổi bên',sec:5,kind:'rest',nx:'Chuẩn bị bên phải'},{lab:'Bên phải — giữ '+hs+' giây',sec:hs,kind:'work'},...afterRest]);
       } else {
-        setPlate(p,e.rep[1]); persist(); runSeq(afterRest);
+        setPlate(p,e.rep[1]); persist(); if(afterRest.length) runSeq(afterRest); else {stopT(); const cd=document.querySelector('.ex.complete:last-of-type'); const cs=[...document.querySelectorAll('.section h3')].find(h=>h.textContent==='Cardio'); if(cs) setTimeout(()=>cs.scrollIntoView({behavior:'smooth',block:'start'}),200);}
         if(!e.rest){const nc=root.querySelector(`.ex[data-idx="${idx+1}"]`); if(nc) setTimeout(()=>nc.scrollIntoView({behavior:'smooth',block:'center'}),150);}
       }
     };
